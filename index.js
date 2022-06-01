@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 
 const app = express();
@@ -50,6 +50,29 @@ async function run() {
     app.post("/add-service", async (req, res) => {
       const newService = req.body;
       const result = await servicesCollection.insertOne(newService);
+      res.send(result);
+    });
+
+    app.put("/update-service/:id", async (req, res) => {
+      const { id } = req.params;
+      const data = req.body;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: data,
+      };
+      const result = await servicesCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
+    });
+
+    app.delete("/delete-service/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await servicesCollection.deleteOne(filter);
       res.send(result);
     });
 
