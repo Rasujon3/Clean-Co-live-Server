@@ -26,11 +26,57 @@ async function run() {
 
     // service get api
 
-    app.get("/service", async (req, res) => {
+    app.get("/get-service", async (req, res) => {
       const query = {};
       const cursor = servicesCollection.find(query);
       const services = await cursor.toArray();
       res.send(services);
+    });
+
+    // With try catch block
+
+    // app.post("/add-service", async (req, res) => {
+    //   try {
+    //     const newService = req.body;
+    //     const result = await servicesCollection.insertOne(newService);
+    //     res.send({ status: true, result: result });
+    //   } catch (error) {
+    //     res.send({ status: false, error });
+    //   }
+    // });
+
+    // Without try-catch block
+
+    app.post("/add-service", async (req, res) => {
+      const newService = req.body;
+      const result = await servicesCollection.insertOne(newService);
+      res.send(result);
+    });
+
+    // body
+    app.get("/dummy-route/user2", async (req, res) => {
+      const data = req.body;
+
+      res.json(data);
+    });
+
+    // Query
+
+    app.get("/dummy-route/user", async (req, res) => {
+      const { name, age } = req.query;
+
+      //   console.log(data);
+      console.log(name);
+      console.log(age);
+      res.json(name);
+    });
+
+    // param
+    app.get("/dummy-route/user/:id", async (req, res) => {
+      const { id } = req.params;
+
+      //   console.log(id);
+      res.json(id);
     });
   } finally {
     // await client.close();
